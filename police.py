@@ -33,13 +33,15 @@ class SlackPolice(object):
         """
         files = self.get_file_list()
         for file in files:
+            if file['filetype'] == 'text':  # without code snippet
+                continue
             res = self.delete_file(file['id'])
             if 'ok' in res and res['ok']:
                 print('{0} deleted.'.format(file['name']))
                 message = 'ファイルは削除しました。ファイルアップロードは禁止ですよ。'
                 self.post_message_to_channels(file['channels'], message)
             else:
-                print("{0} could not be deleted.".format(file_name))
+                print("{0} could not be deleted.".format(file['name']))
 
     def post_message_to_channels(self, channels, message):
         """
